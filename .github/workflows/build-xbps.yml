@@ -28,6 +28,9 @@ jobs:
           sudo rm -f /etc/resolv.conf
           echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
 
+      - name: Disable AppArmor User Namespace Restriction (Ubuntu 24.04 fix)
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
       - name: Clone void-packages
         run: git clone https://github.com/void-linux/void-packages.git --depth 1
 
