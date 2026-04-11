@@ -24,7 +24,7 @@ jobs:
           xbps-query -V
 
       - name: Clone void-packages
-        run: git clone https://github.com/void-linux/void-packages.git
+        run: git clone https://github.com/void-linux/void-packages.git --depth 1
 
       - name: Prepare void-packages environment
         run: |
