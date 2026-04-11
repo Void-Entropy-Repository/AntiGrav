@@ -1,0 +1,46 @@
+# Template file for 'antigravity'
+pkgname=antigravity
+version=1.22.2
+revision=1
+archs="x86_64"
+depends="libX11 libxcb libXcomposite libXcursor libXdamage libXext libXfixes libXi libXrender libXtst nss alsa-lib pango at-spi2-core libcups"
+short_desc="Google Anti-Gravity IDE"
+maintainer="Shehata <shehataofficialmail@gmail.com>"
+license="custom:Proprietary"
+homepage="https://antigravity.google"
+distfiles="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/${version}-5206900187463680/linux-x64/Antigravity.tar.gz"
+checksum="85c6b2decfefef2c6e0adaf161b602da7c1ecb2db6157ec0a4caffcfe4811209"
+
+repository=nonfree
+restricted=yes
+nostrip=yes
+
+do_install() {
+	local opt_path="opt/antigravity"
+	vmkdir "${opt_path}"
+	vcopy * "${opt_path}/"
+
+	vmkdir usr/bin
+	cat <<EOF > ${DESTDIR}/usr/bin/antigravity
+#!/bin/sh
+exec /opt/antigravity/antigravity "\$@"
+EOF
+	chmod +x ${DESTDIR}/usr/bin/antigravity
+
+	# Generate the missing .desktop file
+	vmkdir usr/share/applications
+	cat <<EOF > ${DESTDIR}/usr/share/applications/antigravity.desktop
+[Desktop Entry]
+Name=AntiGravity
+Comment=Google Anti-Gravity IDE
+Exec=/usr/bin/antigravity %U
+Icon=antigravity
+Type=Application
+Terminal=false
+Categories=Development;IDE;
+StartupWMClass=antigravity
+EOF
+
+	# Extract and install the icon found in fzf search
+	vinstall resources/app/out/vs/workbench/contrib/antigravityCustomAppIcon/browser/media/antigravity/antigravity.png 644 usr/share/pixmaps antigravity.png
+}

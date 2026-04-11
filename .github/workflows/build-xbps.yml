@@ -1,0 +1,51 @@
+name: Build AntiGravity XBPS
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Used only for act testing
+    # env:
+    #   XBPS_ALLOW_CHROOT_BREAKOUT: yes
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install static XBPS tools (Ubuntu to Void Bridge)
+        run: |
+          wget https://repo-default.voidlinux.org/static/xbps-static-latest.x86_64-musl.tar.xz
+          sudo tar xf xbps-static-latest.x86_64-musl.tar.xz -C /
+          xbps-query -V
+
+      - name: Clone void-packages
+        run: git clone https://github.com/void-linux/void-packages.git
+
+      - name: Prepare void-packages environment
+        run: |
+          cd void-packages
+          ./xbps-src binary-bootstrap
+          echo "XBPS_ALLOW_RESTRICTED=yes" >> etc/conf
+
+      - name: Inject template
+        run: |
+          mkdir -p void-packages/srcpkgs/antigravity
+          cp template void-packages/srcpkgs/antigravity/
+
+      - name: Build package
+        run: |
+          cd void-packages
+          ./xbps-src pkg antigravity
+
+      - name: Publish to Latest Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: 'Latest AntiGravity Build'
+          make_latest: true
+          files: void-packages/hostdir/binpkgs/nonfree/**/*.xbps
