@@ -3,6 +3,9 @@ name: Build AntiGravity XBPS
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'template'
+      - '.github/workflows/build-xbps.yml'
   workflow_dispatch:
 
 # Prevents race conditions if multiple commits are pushed quickly
