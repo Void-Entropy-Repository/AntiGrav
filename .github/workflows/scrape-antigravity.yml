@@ -20,45 +20,19 @@ jobs:
       - name: Run Scraper Script
         run: |
           chmod +x update.sh
+          # Run the script targeting the local template file
           ./update.sh template
 
       - name: Check if template was modified
         id: check
         run: |
-          if git diff --exit-code void-packages/srcpkgs/antigravity/template; then
+          if git diff --exit-code template; then
             echo "No changes detected. Workflow stopping."
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "Update detected!"
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
-
-      - name: Install static XBPS tools (for xgensum)
-        if: steps.check.outputs.changed == 'true'
-        run: |
-          wget https://repo-default.voidlinux.org/static/xbps-static-latest.x86_64-musl.tar.xz
-          sudo tar xf xbps-static-latest.x86_64-musl.tar.xz -C /
-
-      - name: Patch Ubuntu DNS for musl resolver
-        if: steps.check.outputs.changed == 'true'
-        run: |
-          sudo rm -f /etc/resolv.conf
-          echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
-
-      - name: Disable AppArmor User Namespace Restriction
-        if: steps.check.outputs.changed == 'true'
-        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-
-      - name: Generate new checksum
-        if: steps.check.outputs.changed == 'true'
-        run: |
-          git clone https://github.com/void-linux/void-packages.git --depth 1
-          mkdir -p void-packages/srcpkgs/antigravity
-          cp template void-packages/srcpkgs/antigravity/template
-          cd void-packages
-          ./xbps-src binary-bootstrap
-          ./xbps-src xgensum antigravity
-          cp srcpkgs/antigravity/template ../template
 
       - name: Commit and Push Update
         if: steps.check.outputs.changed == 'true'
@@ -68,7 +42,7 @@ jobs:
 
           git add template
 
-          NEW_VER=$(grep '^version=' void-packages/srcpkgs/antigravity/template | cut -d= -f2 | tr -d '"'\')
+          NEW_VER=$(grep '^version=' template | cut -d= -f2 | tr -d '"'\')
 
           git commit -m "chore(antigravity): auto-update to $NEW_VER"
 
