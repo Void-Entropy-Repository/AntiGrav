@@ -53,18 +53,25 @@ fi
 
 echo "Update required! Bumping $CURRENT_VERSION -> $NEW_VERSION"
 
-# Download, hash, and cleanup
 echo "Downloading tarball to generate checksum..."
 curl -sL "$TARBALL_URL" -o /tmp/antigravity.tar.gz
 NEW_CHECKSUM=$(sha256sum /tmp/antigravity.tar.gz | awk '{print $1}')
 rm -f /tmp/antigravity.tar.gz
-
 echo "New checksum: $NEW_CHECKSUM"
 
-# Write directly to the template
+# Static variables for the manually hosted asset
+ICON_URL="https://raw.githubusercontent.com/Void-Entropy-Repository/AntiGrav/main/assets/icon.png>antigravity.png"
+ICON_CHECKSUM="b27f0e4a6f14f491ba31bb24533a1f43c677362b12a0744a53fdd09d7c785317"
+
+# Update version and reset revision
 sed -i "s/^version=.*/version=$NEW_VERSION/" "$TEMPLATE_PATH"
-sed -i "s|^distfiles=.*|distfiles=\"$TARBALL_URL\"|" "$TEMPLATE_PATH"
 sed -i "s/^revision=.*/revision=1/" "$TEMPLATE_PATH"
-sed -i "s/^checksum=.*/checksum=\"$NEW_CHECKSUM\"/" "$TEMPLATE_PATH"
+
+# 1. Safely delete the old multi-line blocks (from opening quote to closing quote)
+sed -i '/^distfiles="/,/"$/d' "$TEMPLATE_PATH"
+sed -i '/^checksum="/,/"$/d' "$TEMPLATE_PATH"
+
+# 2. Re-insert the updated multi-line blocks right before the 'repository=' line
+sed -i "/^repository=/i distfiles=\"$TARBALL_URL\"\n $ICON_URL\"\nchecksum=\"$NEW_CHECKSUM\"\n $ICON_CHECKSUM\"\n" "$TEMPLATE_PATH"
 
 echo "Template successfully updated to $NEW_VERSION and written to file."
