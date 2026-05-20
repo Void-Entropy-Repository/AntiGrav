@@ -43,6 +43,6 @@ StartupWMClass=antigravity
 EOF
 
 	# Extract and install the icon
-	npx -y @electron/asar extract-file resources/app.asar "icon.png" antigravity.png
+	npx -y @electron/asar extract-file resources/app.asar "icon.png"
 	vinstall ${XBPS_BUILDDIR}/${pkgname}-${version}/antigravity.png 644 usr/share/pixmaps antigravity.png}
 }
