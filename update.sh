@@ -18,7 +18,7 @@ HTML=$(curl -sL --compressed \
   -A "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0" \
   "https://antigravity.google/download/linux")
 
-JS_PATH=$(echo "$HTML" | grep -aoE '[a-zA-Z0-9_./-]*main[-.][a-zA-Z0-9_-]+\.js' | head -n 1)
+JS_PATH=$(echo "$HTML" | grep -aoE '[a-zA-Z0-9_./-]*main[-.][a-zA-Z0-9_-]+\.js' | grep -v 'polyfill\|legacy' | head -n 1)
 
 if [ -z "$JS_PATH" ]; then
     echo "Error: Could not find main JS file in HTML."
@@ -36,7 +36,7 @@ fi
 echo "Fetching JS from: $JS_URL"
 
 JS_CONTENT=$(curl -sL --compressed -A "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0" "$JS_URL")
-TARBALL_URL=$(echo "$JS_CONTENT" | grep -aoE 'https://edgedl\.me\.gvt1\.com[^"'\'' ]+linux-x64/Antigravity\.tar\.gz' | head -n 1)
+TARBALL_URL=$(echo "$JS_CONTENT" | grep -aoE 'https://edgedl\.me\.gvt1\.com[^"'\'' ]+linux-[a-zA-Z0-9_-]+/[^"'\'' ]+\.tar\.gz' | sort -V | tail -n 1)
 
 if [ -z "$TARBALL_URL" ]; then
     echo "Error: Could not extract tarball URL from JS bundle."
