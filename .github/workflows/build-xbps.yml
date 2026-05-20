@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'template'
+      - 'template*' # Triggers on any template file change
       - '.github/workflows/build-xbps.yml'
   workflow_dispatch:
 
@@ -45,28 +45,33 @@ jobs:
           ./xbps-src binary-bootstrap
           echo "XBPS_ALLOW_RESTRICTED=yes" >> etc/conf
 
-      - name: Inject template
+      - name: Inject templates dynamically
         run: |
-          mkdir -p void-packages/srcpkgs/antigravity
-          cp template void-packages/srcpkgs/antigravity/
+          for t in template*; do
+            PKG_NAME=$(echo $t | sed 's/template/antigravity/')
+            mkdir -p void-packages/srcpkgs/$PKG_NAME
+            cp $t void-packages/srcpkgs/$PKG_NAME/template
+          done
 
-      - name: Build package
+      - name: Build packages
         run: |
           cd void-packages
-          ./xbps-src pkg antigravity
+          # Build all antigravity-* packages found in srcpkgs
+          for p in srcpkgs/antigravity-*; do
+            ./xbps-src pkg $(basename $p)
+          done
 
-      - name: Extract version from template
-        id: version
+      - name: Generate Release Snapshot ID
         run: |
-          # Read version, cut by '=', and strip any accidental quotes
-          PKG_VER=$(grep '^version=' void-packages/srcpkgs/antigravity/template | cut -d= -f2 | tr -d '"'\')
-          echo "PKG_VER=${PKG_VER}" >> $GITHUB_ENV
+          # Create a CalVer timestamped tag with the commit hash
+          SNAPSHOT="v$(date +'%Y.%m.%d')-$(git rev-parse --short HEAD)"
+          echo "SNAPSHOT=${SNAPSHOT}" >> $GITHUB_ENV
 
       - name: Publish Semantic Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ env.PKG_VER }}
-          name: 'AntiGravity v${{ env.PKG_VER }}'
+          tag_name: ${{ env.SNAPSHOT }}
+          name: 'AntiGravity Build ${{ env.SNAPSHOT }}'
           make_latest: true
           files: void-packages/hostdir/binpkgs/nonfree/**/*.xbps
 
