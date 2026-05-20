@@ -42,9 +42,9 @@ Categories=Development;IDE;
 StartupWMClass=antigravity
 EOF
 
-	# Extract and install the icon found in fzf search
-	npx asar extract-file ${XBPS_BUILDDIR}/${pkgname}-${version}/Antigravity-x64/resources/app.asar \
-        "icon.png" \
-        ${XBPS_BUILDDIR}/${pkgname}-${version}/antigravity.png
-	vinstall ${XBPS_BUILDDIR}/${pkgname}-${version}/antigravity.png 644 usr/share/pixmaps antigravity.png
+	# Extract and install the icon
+	npx asar extract-file ${DESTDIR}/${opt_path}/resources/app.asar \
+		"icon.png" \
+		${XBPS_BUILDDIR}/${pkgname}-${version}/antigravity.png
+	vinstall ${XBPS_BUILDDIR}/${pkgname}-${version}/antigravity.png 644 usr/share/pixmaps antigravity.png}
 }
