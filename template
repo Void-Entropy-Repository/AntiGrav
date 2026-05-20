@@ -4,6 +4,7 @@ version=2.0.1
 revision=1
 archs="x86_64"
 depends="libX11 libxcb libXcomposite libXcursor libXdamage libXext libXfixes libXi libXrender libXtst nss alsa-lib pango at-spi2-core libcups"
+hostmakedepends="nodejs" # why app.asar, man. now I need npx.
 short_desc="Google Anti-Gravity IDE"
 maintainer="Shehata <shehataofficialmail@gmail.com>"
 license="custom:Proprietary"
@@ -42,5 +43,8 @@ StartupWMClass=antigravity
 EOF
 
 	# Extract and install the icon found in fzf search
-	vinstall resources/app/out/vs/workbench/contrib/antigravityCustomAppIcon/browser/media/antigravity/antigravity.png 644 usr/share/pixmaps antigravity.png
+	npx asar extract-file ${XBPS_BUILDDIR}/${pkgname}-${version}/Antigravity-x64/resources/app.asar \
+        "icon.png" \
+        ${XBPS_BUILDDIR}/${pkgname}-${version}/antigravity.png
+	vinstall ${XBPS_BUILDDIR}/${pkgname}-${version}/antigravity.png 644 usr/share/pixmaps antigravity.png
 }
