@@ -21,7 +21,7 @@ jobs:
         run: |
           chmod +x update.sh
           # Run the script targeting the local template file
-          ./update.sh template
+          ./update.sh
 
       - name: Check if template was modified
         id: check
