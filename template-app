@@ -1,0 +1,43 @@
+pkgname=antigravity
+version=1.23.2
+revision=1
+archs="x86_64"
+depends="libX11 libxcb libXcomposite libXcursor libXdamage libXext libXfixes libXi libXrender libXtst nss alsa-lib pango at-spi2-core libcups"
+short_desc="Google Antigravity 2.0 - Standalone Agent Surface"
+maintainer="Shehata <shehataofficialmail@gmail.com>"
+license="custom:Proprietary"
+homepage="https://antigravity.google"
+distfiles="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/${version}-4781536860569600/linux-x64/Antigravity.tar.gz>antigravity-${version}.tar.gz https://raw.githubusercontent.com/Void-Entropy-Repository/AntiGrav/main/assets/icon.png>antigravity.png"
+checksum="5232a4048ff4fa15685d9a981ba4fba573e297f3efc9b76f638e794baf775725 b27f0e4a6f14f491ba31bb24533a1f43c677362b12a0744a53fdd09d7c785317"
+skip_extraction="antigravity.png"
+repository=nonfree
+restricted=yes
+nostrip=yes
+
+do_install() {
+	local opt_path="opt/antigravity"
+	vmkdir "${opt_path}"
+	vcopy * "${opt_path}/"
+
+	vmkdir usr/bin
+	cat <<EOF > ${DESTDIR}/usr/bin/antigravity
+#!/bin/sh
+exec /opt/antigravity/antigravity "\$@"
+EOF
+	chmod +x ${DESTDIR}/usr/bin/antigravity
+
+	vmkdir usr/share/applications
+	cat <<EOF > ${DESTDIR}/usr/share/applications/antigravity.desktop
+[Desktop Entry]
+Name=Antigravity 2.0
+Comment=Google Antigravity Standalone Agent Surface
+Exec=/usr/bin/antigravity %U
+Icon=antigravity
+Type=Application
+Terminal=false
+Categories=Development;
+StartupWMClass=antigravity
+EOF
+
+	vinstall ${XBPS_SRCDISTDIR}/${pkgname}-${version}/antigravity.png 644 usr/share/pixmaps antigravity.png
+}
