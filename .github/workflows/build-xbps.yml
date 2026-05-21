@@ -48,7 +48,10 @@ jobs:
       - name: Inject templates dynamically
         run: |
           for t in template*; do
-            PKG_NAME=$(echo $t | sed 's/template/antigravity/')
+            # Extract the actual pkgname strictly from the file's variable
+            PKG_NAME=$(grep '^pkgname=' "$t" | cut -d= -f2 | tr -d '"' | tr -d "'")
+
+            echo "Mapping $t -> srcpkgs/$PKG_NAME"
             mkdir -p void-packages/srcpkgs/$PKG_NAME
             cp $t void-packages/srcpkgs/$PKG_NAME/template
           done
