@@ -15,7 +15,7 @@ restricted=yes
 nostrip=yes
 
 do_install() {
-	local opt_path="opt/antigravity"
+	local opt_path="opt/antigravity-ide"
 	vmkdir "${opt_path}"
 	vcopy * "${opt_path}/"
 	rm -f ${DESTDIR}/${opt_path}/antigravity-ide.png
@@ -40,5 +40,5 @@ Categories=Development;IDE;
 StartupWMClass=antigravity
 EOF
 
-	vinstall ${XBPS_SRCDISTDIR}/${pkgname}-${version}/antigravity-ide.png 644 usr/share/pixmaps antigravity.png
+	vinstall ${XBPS_SRCDISTDIR}/${pkgname}-${version}/antigravity-ide.png 644 usr/share/pixmaps antigravity-ide.png
 }
