@@ -21,11 +21,11 @@ do_install() {
 	rm -f ${DESTDIR}/${opt_path}/antigravity-ide.png
 
 	vmkdir usr/bin
-	cat <<EOF > ${DESTDIR}/usr/bin/antigravity
+	cat <<EOF > ${DESTDIR}/usr/bin/antigravity-ide
 #!/bin/sh
 exec /opt/antigravity-ide/antigravity-ide "\$@"
 EOF
-	chmod +x ${DESTDIR}/usr/bin/antigravity
+	chmod +x ${DESTDIR}/usr/bin/antigravity-ide
 
 	vmkdir usr/share/applications
 	cat <<EOF > ${DESTDIR}/usr/share/applications/antigravity-ide.desktop
