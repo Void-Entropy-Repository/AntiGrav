@@ -1,5 +1,5 @@
 pkgname=antigravity-ide
-version=2.0.4
+version=2.1.1
 revision=1
 archs="x86_64"
 depends="libX11 libxcb libXcomposite libXcursor libXdamage libXext libXfixes libXi libXrender libXtst nss alsa-lib pango at-spi2-core libcups"
@@ -7,8 +7,8 @@ short_desc="Google Anti-Gravity IDE"
 maintainer="Shehata <shehataofficialmail@gmail.com>"
 license="custom:Proprietary"
 homepage="https://antigravity.google"
-distfiles="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/${version}-6381998290370560/linux-x64/Antigravity%20IDE.tar.gz>antigravity-ide-${version}.tar.gz https://raw.githubusercontent.com/Void-Entropy-Repository/AntiGrav/main/assets/icon.png>antigravity-ide.png"
-checksum="66337d45f2472ce5e89f394e77aec74909aa1be0bb33c9f73299a95f458e6770 b27f0e4a6f14f491ba31bb24533a1f43c677362b12a0744a53fdd09d7c785317"
+distfiles="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/${version}-6123990880747520/linux-x64/Antigravity%20IDE.tar.gz>antigravity-ide-${version}.tar.gz https://raw.githubusercontent.com/Void-Entropy-Repository/AntiGrav/main/assets/icon.png>antigravity-ide.png"
+checksum="5b2cebf7d33a68d003fd8f1fa988d1600905ace22504a085e5384214290878bd b27f0e4a6f14f491ba31bb24533a1f43c677362b12a0744a53fdd09d7c785317"
 skip_extraction="antigravity-ide.png"
 repository=nonfree
 restricted=yes
